@@ -112,28 +112,33 @@ def addToDelayed(att):
     if (len(send) > 5): # действие с сообщением с текстом
         # создание списков людей, которым откладыватся рассылки #
         date = send[6:22]
+        date[13] = '.'
         send = send[23:]
-        with open("people.txt") as ids:
-            users = [row.strip() for row in ids]
-        with open("chats.txt") as ids:
-            chat = [row.strip() for row in ids]
+        if (len(send) != 0):
 
-        #########################################################
+            #########################################################
+            with open("dates.txt") as ids:
+                dates = [row.strip() for row in ids]
+            text = ''
+            for i in range(len(dates)):
+                text += dates[i] + '\n'
+            text += date + '\n'
+            dt = open("dates.txt", mode = 'w')
+            dt.write(text)
+            dt.close()
 
-        if (len(att) != 0): # отправка рассылки при наличии аттачментов
-            print(send)
-            print(att)
-            print(date)
-        else: # отправка рассылки без аттачментов
-            print(send)
-            print(date)
-    else: # отправка рассылки без текста
-        if (len(att) != 0): # но с аттачментами
-            with open("people.txt") as ids:
-                users = [row.strip() for row in ids]
-            with open("chats.txt") as ids:
-                chat = [row.strip() for row in ids]
-            print(att)
+            name = "\\DelayedPosts\\" + date + ".txt"
+            delayed = open(name, mode = 'w')
+
+            inp = ''
+            if (len(att) != 0): # отправка рассылки при наличии аттачментов
+                inp += 'att: ' + att + '\n'
+                inp += 'send: ' + send
+            else: # отправка рассылки без аттачментов
+                inp += 'send: ' + send
+        else: # отправка рассылки без текста
+            if (len(att) != 0): # но с аттачментами
+                inp += 'att: ' + att
     return   
 
 def SendMessage():
@@ -267,7 +272,7 @@ for event in longpoll.listen():
 # todo:
 # 1. Отписка от беседы +
 # 2. Возможность постить в нужные беседы и нужным людям
-# 3. Отложенный постинг
+# 3. Отложенный постинг TBA
 # 4. Работа в режими "mention only"
 # 5. Кнопочки
 # 6. Рефакторинг +
